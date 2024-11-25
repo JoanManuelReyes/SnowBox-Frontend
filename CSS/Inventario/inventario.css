@@ -1,0 +1,92 @@
+/* Logo */
+.logo-img {
+    width: 200px;  /* Ajusta el tamaño de la imagen del logo */
+    margin-left: auto;
+    margin-top: -8px;
+}
+
+.custom-navbar {
+    background-color: #F53914;  /* Cambia este valor por el color que prefieras */
+    height: 60px;  /* Ajusta la altura como desees */
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+/* Sidebar */
+.custom-sidebar {
+    height: 100vh; /* Ajusta la altura restando la altura del navbar */
+    background-color: #F53914; /* Color del sidebar */
+    padding-top: 0; /* Eliminar el padding superior */
+    margin-top: 0; /* Eliminar el margen superior */
+    position: sticky; /* Mantener el sidebar en su lugar al hacer scroll */
+    top: 0; /* Asegúrate de que esté en la parte superior */
+}
+
+.custom-sidebar a {
+    color: white; /* Color del texto en el sidebar */
+    font-size: 18px;
+    margin: 10px 0; /* Margen entre los enlaces del sidebar */
+    display: block;
+    padding: 10px;
+    text-align: left;
+}
+
+.custom-sidebar a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+    color: #fff; /* Cambia el color al pasar el mouse para mayor visibilidad */
+}
+
+.custom-sidebar a.active {
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo similar al hover */
+    font-weight: bold; /* Resalta el texto */
+    color: #fff; /* Cambia el color del texto si es necesario */
+}
+
+
+
+/* Main Content */
+.card {
+    margin-bottom: 20px;
+}
+
+.table-warning {
+    background-color: #fff8e1;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+
+.input-group-text {
+    background-color: transparent;
+    border: none;
+}
+
+.table-responsive-scroll {
+    max-height: 250px; /* Ajusta la altura según necesites */
+    overflow-y: auto;
+}
+
+.table-responsive-scroll::-webkit-scrollbar {
+    width: 8px; /* Ancho del scrollbar */
+}
+
+.table-responsive-scroll::-webkit-scrollbar-thumb {
+    background: #888; /* Color del thumb */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+.table-responsive-scroll::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color del thumb en hover */
+}
+
+.table-responsive-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color de fondo del track */
+}
+
+.selectable-row:hover {
+    background-color: #f1f1f1; /* Color de fondo al pasar el mouse */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+}
