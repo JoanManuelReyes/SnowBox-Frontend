@@ -145,13 +145,14 @@ function enviarDatos(event) {
         })
         .then(result => {
             console.log('Respuesta de la API:', result);
+            localStorage.setItem('tipoUsuario', result.message);
             Swal.fire({
                 icon: 'success',
                 title: 'Listo',
                 text: 'Se hicieron los cambios correctamente'
             }).then((result) => {
                 if (result.isConfirmed || result.isDismissed) {
-                    window.location.href = `index.html`;
+                    window.location.href = `src/Dash/Inventario.html`;
                 }
             });
         })

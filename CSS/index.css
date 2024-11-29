@@ -1,0 +1,71 @@
+/* Fondo */
+body {
+    background-color: #F53914;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Posiciona el logo en la esquina superior derecha */
+.logo-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.logo {
+    width: 200px;
+}
+
+/* Contenedor del formulario */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-box {
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Título del formulario */
+h2 {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Estilos para los inputs */
+.form-group label {
+    font-weight: 500;
+    text-align: left;
+    display: block;
+    color: #333;
+}
+
+.form-control {
+    border-radius: 20px;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+/* Estilo del botón de ingreso */
+.btn-primary {
+    background-color: #FF6B45;
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    padding: 10px;
+    color: white;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: #FF512A;
+}
