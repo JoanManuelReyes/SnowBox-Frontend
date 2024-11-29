@@ -27,8 +27,9 @@ function enviarDatos(event) {
         contrasenia: document.getElementById('password').value
     };
 
+    console.log(data);
 
-    fetch(action, {
+    /*fetch(action, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -64,5 +65,5 @@ function enviarDatos(event) {
                     window.location.href = 'index.html';
                 }
             });
-        });
+        });*/
 }
