@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+
 function enviarDatos(event) {
     event.preventDefault();
 
@@ -27,9 +28,7 @@ function enviarDatos(event) {
         contrasenia: document.getElementById('password').value
     };
 
-    console.log(data);
-
-    /*fetch(action, {
+    fetch('https://snowbox-backend-production.up.railway.app/api/equipologistica/login', {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -44,13 +43,14 @@ function enviarDatos(event) {
         })
         .then(result => {
             console.log('Respuesta de la API:', result);
+            localStorage.setItem('tipoUsuario', result.message);
             Swal.fire({
                 icon: 'success',
                 title: 'Listo',
-                text: 'Se hicieron los cambios correctamente'
+                text: 'Inicio de sesión correcto'
             }).then((result) => {
                 if (result.isConfirmed || result.isDismissed) {
-                    window.location.href = `index.html`;
+                    window.location.href = `src/Dash/Inventario.html`;
                 }
             });
         })
@@ -65,5 +65,5 @@ function enviarDatos(event) {
                     window.location.href = 'index.html';
                 }
             });
-        });*/
+        });
 }

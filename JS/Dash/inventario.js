@@ -85,9 +85,19 @@ function cargarDatosTablaRestock() {
 }
 
 // Llamar a la función para cargar datos al cargar la página
+document.addEventListener('DOMContentLoaded', verificarUsuario);
 document.addEventListener('DOMContentLoaded', cargarDatosTablaInv);
 document.addEventListener('DOMContentLoaded', cargarDatosTablaRestock);
 
+
+const tipoUsuario = localStorage.getItem('tipoUsuario');
+console.log(tipoUsuario);
+
+function verificarUsuario() {
+    if (!localStorage.getItem('tipoUsuario')) {
+        window.location.href = '../../index.html'; // Redirige a la página de inicio de sesión
+    }
+}
 
 function fillForm(codigo, producto, descripcion, entradas, salidas, proveedor) {
     // Llenar los inputs con los datos de la fila seleccionada
@@ -108,9 +118,7 @@ function setMethodAndAction(method) {
     } else {
         const id = document.getElementById('codigo-input').value;
         form.dataset.action = 'https://snowbox-backend-production.up.railway.app/api/producto/modificarProducto/'+ id;
-        console.log(method);
     }
-
 }
 
 function enviarDatos(event) {
@@ -145,14 +153,13 @@ function enviarDatos(event) {
         })
         .then(result => {
             console.log('Respuesta de la API:', result);
-            localStorage.setItem('tipoUsuario', result.message);
             Swal.fire({
                 icon: 'success',
                 title: 'Listo',
                 text: 'Se hicieron los cambios correctamente'
             }).then((result) => {
                 if (result.isConfirmed || result.isDismissed) {
-                    window.location.href = `src/Dash/Inventario.html`;
+                    window.location.href = `Inventario.html`;
                 }
             });
         })
@@ -164,7 +171,7 @@ function enviarDatos(event) {
                 text: 'Porfavor, revisa los datos'
             }).then((result) => {
                 if (result.isConfirmed || result.isDismissed) {
-                    window.location.href = 'index.html';
+                    window.location.href = 'Inventario.html';
                 }
             });
         });
