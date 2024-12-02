@@ -85,7 +85,7 @@ function cargarDatosProducto() {
             });
 
             $(document).ready(function(){
-                $('#proveedores').select2();
+                $('#producto').select2();
             });
         })
         .catch(error => {
