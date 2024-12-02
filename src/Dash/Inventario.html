@@ -23,6 +23,11 @@
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
 
+    <!-- select search -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script src="..\..\JS\verificacionUsuario.js"></script>
     <script src="..\..\JS\Dash\inventario.js"></script>
 </head>
 <body>
@@ -33,7 +38,10 @@
             <a class="navbar-brand" href="#">
                 <img src="..\images\logo.jpg" alt="Logo SnowBox" class="logo-img">
             </a>
-            <a href="..\..\index.html" class="text-white"><i class="bi bi-box-arrow-left"></i></a>
+            <span class="navbar-text text-white" id="tipo-usuario">
+                Administrador
+            </span>
+            <button class="nav-link text-white" onclick="cerrarSesion()"><i class="bi bi-box-arrow-left"></i></button>
         </div>
     </nav>
 
@@ -43,6 +51,10 @@
             <div class="col-2 custom-sidebar">
                 <div class="nav flex-column">
                     <a href="Inventario.html" class="nav-link active"><i class="bi bi-box-seam"></i> Inventario</a>
+                    <a href="ComprasDevoluciones.html" class="nav-link"><i class="bi bi-truck"></i> Compras y Devoluciones</a>
+                    <a href="Proveedores.html" class="nav-link"><i class="bi bi-globe"></i> Proveedores</a>
+                    <a href="Reportes.html" class="nav-link"><i class="bi bi-clipboard-data"></i> Reportes</a>
+                    <a href="Configuracion.html" class="nav-link" id="menu-configuracion"><i class="bi bi-gear"></i> Configuración</a>
                 </div>
             </div>
 
@@ -57,33 +69,76 @@
                                 <h5 class="card-title">Registro:</h5>
                                 <form id="productForm" onsubmit="enviarDatos(event)">
                                     <div class="row mb-2">
-                                        <div class="col">
-                                            <input type="text" class="form-control" id="codigo-input" name="codigo" placeholder="Código">
+                                        <div class="col-5">
+                                            <div class="row">
+                                                <div class="col-5">
+                                                    <p>Código: </p>
+                                                </div>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control" id="codigo-input" name="codigo" placeholder="Código">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col">
-                                            <input type="number" class="form-control" id="entradas-input" name="entradas" placeholder="Entradas" min="0" value="0" oninput="validarEntradas(this)">
+                                        <div class="col-4">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <p>Entradas: </p>
+                                                </div>
+                                                <div class="col-6">
+                                                <input type="number" class="form-control" id="entradas-input" name="entradas" placeholder="Entradas" min="0" value="0" oninput="validarEntradas(this)">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-3">
                                             <button type="submit" class="btn btn-success col" onclick="setMethodAndAction('post')">Registrar</button>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
-                                        <div class="col">
-                                            <input type="text" class="form-control" id="producto-input" name="producto" placeholder="Producto">
+                                        <div class="col-5">
+                                            <div class="row">
+                                                <div class="col-5">
+                                                    <p>Nombre Producto: </p>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="text" class="form-control" id="producto-input" name="producto" placeholder="Producto">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col">
-                                            <input type="number" class="form-control" id="salidas-input" name="salidas" placeholder="Salidas" min="0" value="0" oninput="validarSalidas(this)">
+                                        <div class="col-4">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <p>Salidas: </p>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="number" class="form-control" id="salidas-input" name="salidas" placeholder="Salidas" min="0" value="0" oninput="validarSalidas(this)">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-3">
                                             <button type="submit" class="btn btn-warning" onclick="setMethodAndAction('put')">Modificar</button>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col">
-                                            <input type="text" class="form-control" id="codigo_proveedor" name="codigo_proveedor" placeholder="ID Proveedor">
+                                        <div class="col-5">
+                                            <div class="row">
+                                                <div class="col-5">
+                                                    <p>Proveedor: </p>
+                                                </div>
+                                                <div class="col">
+                                                    <select class="form-select" aria-label="Default select example" id="proveedores" name="proveedores" >
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col">
-                                            <input type="text" class="form-control" id="descripcion-input" name="descripcion" placeholder="Descripción">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <p>Descripción: </p>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="text" class="form-control" id="descripcion-input" name="descripcion" placeholder="Descripción">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>

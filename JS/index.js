@@ -43,7 +43,7 @@ function enviarDatos(event) {
         })
         .then(result => {
             console.log('Respuesta de la API:', result);
-            localStorage.setItem('tipoUsuario', result.message);
+            localStorage.setItem('idUsuario', result.message);
             Swal.fire({
                 icon: 'success',
                 title: 'Listo',

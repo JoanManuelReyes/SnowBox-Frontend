@@ -84,20 +84,47 @@ function cargarDatosTablaRestock() {
         });
 }
 
+
+function cargarDatosProveedores() {
+    fetch('https://snowbox-backend-production.up.railway.app/api/proveedor/listarTodos')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener datos de la API');
+            }
+            return response.json();
+        })
+        .then(datos => {
+            const selectProveedores = document.getElementById('proveedores');
+            selectProveedores.innerHTML = '';
+            
+            const option = document.createElement('option');
+            option.value = 0;
+            option.selected = true;
+            option.disabled = true;
+            option.textContent = `Proveedor`;
+            selectProveedores.appendChild(option);
+
+            datos.forEach(proveedor => {
+                const option = document.createElement('option');
+                option.value = proveedor.id;
+                option.textContent = `${proveedor.nombre} - ${proveedor.id}`;
+                selectProveedores.appendChild(option);
+            });
+
+            $(document).ready(function(){
+                $('#proveedores').select2();
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
 // Llamar a la función para cargar datos al cargar la página
-document.addEventListener('DOMContentLoaded', verificarUsuario);
 document.addEventListener('DOMContentLoaded', cargarDatosTablaInv);
 document.addEventListener('DOMContentLoaded', cargarDatosTablaRestock);
+document.addEventListener('DOMContentLoaded', cargarDatosProveedores);
 
-
-const tipoUsuario = localStorage.getItem('tipoUsuario');
-console.log(tipoUsuario);
-
-function verificarUsuario() {
-    if (!localStorage.getItem('tipoUsuario')) {
-        window.location.href = '../../index.html'; // Redirige a la página de inicio de sesión
-    }
-}
 
 function fillForm(codigo, producto, descripcion, entradas, salidas, proveedor) {
     // Llenar los inputs con los datos de la fila seleccionada
@@ -107,7 +134,8 @@ function fillForm(codigo, producto, descripcion, entradas, salidas, proveedor) {
     document.getElementById('descripcion-input').value = descripcion;
     document.getElementById('entradas-input').value = entradas;
     document.getElementById('salidas-input').value = salidas;
-    document.getElementById('codigo_proveedor').value = proveedor;
+    document.getElementById('proveedores').value = proveedor;
+    $('#proveedores').val(proveedor).trigger('change');
 }
 
 function setMethodAndAction(method) {
@@ -132,9 +160,9 @@ function enviarDatos(event) {
         descripcion: document.getElementById('descripcion-input').value,
         entradas: document.getElementById('entradas-input').value,
         salidas: document.getElementById('salidas-input').value,
-        proveedor: document.getElementById('codigo_proveedor').value
+        proveedor: document.getElementById('proveedores').value
     };
-
+    
     const method = form.dataset.method;
     const action = form.dataset.action;
 
@@ -188,3 +216,5 @@ function validarSalidas(input) {
         input.value = 0; // Restablecer a 0 si se intenta ingresar un número negativo
     }
 }
+
+
