@@ -1,8 +1,8 @@
-document.addEventListener('DOMContentLoaded', cargarDatosTabla);
-document.addEventListener('DOMContentLoaded', cargarDatosProducto);
+// Llamar a la función para cargar datos al cargar la página
+document.addEventListener('DOMContentLoaded', cargarDatosUsuarios);
 
-function cargarDatosTabla() {
-    fetch('https://snowbox-backend-production.up.railway.app/api/solicitud/listarSolicitudesModulo')
+function cargarDatosUsuarios() {
+    fetch('https://snowbox-backend-production.up.railway.app/api/equipologistica/listar')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al obtener datos de la API');
@@ -11,21 +11,21 @@ function cargarDatosTabla() {
         })
         .then(datos => {
             const tablaBody = document.getElementById('tabla-body');
-            tablaBody.innerHTML = '';
+            tablaBody.innerHTML = ''; // Limpiar contenido existente
             
             datos.forEach(item => {
-                const fila = `
-                    <tr>
+                if(item.id !== 1){
+                    const fila = `
+                    <tr class="selectable-row" onclick="fillForm('${item.id}', '${item.nombre_completo}', '${item.dni}', '${item.telefono}')">
                         <td class="text-center">${item.id}</td>
-                        <td class="text-center">${item.usuario_id}</td>
-                        <td>${item.producto_nombre} - ${item.producto_id}</td>
-                        <td class="text-center">${item.fecha}</td>
-                        <td class="text-center">${item.cantidad}</td>
-                        <td class="text-center">${item.tipo}</td>
-                        <td class="text-center">${item.estado}</td>
+                        <td>${item.nombre_completo}</td>
+                        <td>${item.dni}</td>
+                        <td class="text-center">****</td>
+                        <td class="text-center">${item.telefono}</td>
                     </tr>
                 `;
                 tablaBody.innerHTML += fila;
+                }
             });
 
             $(document).ready(function(){
@@ -58,62 +58,29 @@ function cargarDatosTabla() {
         });
 }
 
-function cargarDatosProducto() {
-    fetch('https://snowbox-backend-production.up.railway.app/api/producto/listarTodos')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al obtener datos de la API');
-            }
-            return response.json();
-        })
-        .then(datos => {
-            const selectProveedores = document.getElementById('producto');
-            selectProveedores.innerHTML = '';
-            
-            const option = document.createElement('option');
-            option.value = 0;
-            option.selected = true;
-            option.disabled = true;
-            option.textContent = `Producto`;
-            selectProveedores.appendChild(option);
 
-            datos.forEach(producto => {
-                const option = document.createElement('option');
-                option.value = producto.id;
-                option.textContent = `${producto.nombre} - ${producto.id}`;
-                selectProveedores.appendChild(option);
-            });
-
-            $(document).ready(function(){
-                $('#proveedores').select2();
-            });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+function fillForm(codigo, nombre, dni, telefono) {
+    // Llenar los inputs con los datos de la fila seleccionada
+    document.getElementById('codigo-input').value = codigo;
+    document.getElementById('dni-input').value = dni;
+    document.getElementById('telefono-input').value = telefono;
+    document.getElementById('nombre-input').value = nombre;
 }
 
-function setMethodAndAction() {
+function setMethodAndAction(method) {
     const form = document.getElementById('registrosForm');
-    form.dataset.method = 'POST'
-    const tipo = document.getElementById('tipo').value;
-    if (tipo === "1"){
-        form.dataset.action = 'https://snowbox-backend-production.up.railway.app/api/compra/generar';
-    }else{
-        form.dataset.action = 'https://snowbox-backend-production.up.railway.app/api/devolucion/generar';
+    form.dataset.method = method;
+    const id = document.getElementById('codigo-input').value;
+    if (method === 'POST') {
+        form.dataset.action = 'https://snowbox-backend-production.up.railway.app/api/equipologistica/crearUsuario';
+    }
+    if (method === 'PUT') {
+        form.dataset.action = 'https://snowbox-backend-production.up.railway.app/api/equipologistica/modificarUsuario/'+ id;
+    }
+    if (method === 'DELETE') {
+        form.dataset.action = 'https://snowbox-backend-production.up.railway.app/api/equipologistica/eliminarUsuario/'+ id;
     }
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('cantidad-input').addEventListener('keypress', function(event) {
-        // Solo permite números
-        const keyCode = event.keyCode || event.which;
-        if (keyCode < 48 || keyCode > 57) {
-            event.preventDefault(); // Bloquea el ingreso si no es un número
-        }
-    });
-});
-
 
 function enviarDatos(event) {
     event.preventDefault();
@@ -121,14 +88,15 @@ function enviarDatos(event) {
     const form = document.getElementById('registrosForm');
 
     const data = {
-        id_usuario: localStorage.getItem('idUsuario'),
-        id_producto: document.getElementById('producto').value,
-        cantidad: document.getElementById('cantidad-input').value,
-        descripcion: document.getElementById('descripcion_solicitud').value,
+        id: document.getElementById('codigo-input').value,
+        nombre: document.getElementById('nombre-input').value,
+        dni: document.getElementById('dni-input').value,
+        contrasenia: document.getElementById('contrasenia-input').value,
+        telefono: document.getElementById('telefono-input').value
     };
 
     console.log(data);
-    
+
     fetch(form.dataset.action, {
         method: form.dataset.method,
         headers: {
@@ -150,7 +118,7 @@ function enviarDatos(event) {
                 text: 'Se hicieron los cambios correctamente'
             }).then((result) => {
                 if (result.isConfirmed || result.isDismissed) {
-                    window.location.href = `ComprasDevoluciones.html`;
+                    window.location.href = `Configuracion.html`;
                 }
             });
         })
@@ -163,3 +131,17 @@ function enviarDatos(event) {
             })
         });
 }
+
+function validarEntradas(input) {
+    if (input.value < 0) {
+        input.value = 0; // Restablecer a 0 si se intenta ingresar un número negativo
+    }
+}
+
+function validarSalidas(input) {
+    if (input.value < 0) {
+        input.value = 0; // Restablecer a 0 si se intenta ingresar un número negativo
+    }
+}
+
+

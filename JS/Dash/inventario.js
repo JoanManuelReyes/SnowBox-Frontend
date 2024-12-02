@@ -197,11 +197,7 @@ function enviarDatos(event) {
                 icon: 'error',
                 title: 'Error',
                 text: 'Porfavor, revisa los datos'
-            }).then((result) => {
-                if (result.isConfirmed || result.isDismissed) {
-                    window.location.href = 'Inventario.html';
-                }
-            });
+            })
         });
 }
 

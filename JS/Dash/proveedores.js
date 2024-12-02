@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', cargarDatosTabla);
-document.addEventListener('DOMContentLoaded', cargarDatosProducto);
 
 function cargarDatosTabla() {
-    fetch('https://snowbox-backend-production.up.railway.app/api/solicitud/listarSolicitudesModulo')
+    fetch('https://snowbox-backend-production.up.railway.app/api/proveedor/listarTodos')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al obtener datos de la API');
@@ -15,14 +14,12 @@ function cargarDatosTabla() {
             
             datos.forEach(item => {
                 const fila = `
-                    <tr>
+                    <tr class="selectable-row" onclick="fillForm('${item.id}', '${item.nombre}', '${item.ruc}', '${item.telefono}', '${item.correo}')">
                         <td class="text-center">${item.id}</td>
-                        <td class="text-center">${item.usuario_id}</td>
-                        <td>${item.producto_nombre} - ${item.producto_id}</td>
-                        <td class="text-center">${item.fecha}</td>
-                        <td class="text-center">${item.cantidad}</td>
-                        <td class="text-center">${item.tipo}</td>
-                        <td class="text-center">${item.estado}</td>
+                        <td>${item.nombre}</td>
+                        <td>${item.ruc}</td>
+                        <td>${item.telefono}</td>
+                        <td class="text-center">${item.correo}</td>
                     </tr>
                 `;
                 tablaBody.innerHTML += fila;
@@ -58,60 +55,72 @@ function cargarDatosTabla() {
         });
 }
 
-function cargarDatosProducto() {
+function fillForm(codigo,nombre,ruc,telefono,correo) {
+    // Llenar los inputs con los datos de la fila seleccionada
+    document.getElementById('codigo-input').value = codigo;
+    document.getElementById('nombre-input').value = nombre;
+    document.getElementById('ruc-input').value = ruc;
+    document.getElementById('telefono-input').value = telefono;
+    document.getElementById('correo_proveedor').value = correo;
+
     fetch('https://snowbox-backend-production.up.railway.app/api/producto/listarTodos')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al obtener datos de la API');
-            }
-            return response.json();
-        })
-        .then(datos => {
-            const selectProveedores = document.getElementById('producto');
-            selectProveedores.innerHTML = '';
-            
-            const option = document.createElement('option');
-            option.value = 0;
-            option.selected = true;
-            option.disabled = true;
-            option.textContent = `Producto`;
-            selectProveedores.appendChild(option);
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Filtrar los productos por proveedor_id que coincida con 'codigo'
+        const filteredProducts = data.filter(product => product.proveedor_id == codigo);
 
-            datos.forEach(producto => {
-                const option = document.createElement('option');
-                option.value = producto.id;
-                option.textContent = `${producto.nombre} - ${producto.id}`;
-                selectProveedores.appendChild(option);
-            });
+        // Limpiar la tabla antes de llenarla
+        const table = document.getElementById('productos-table');
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Productos</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${filteredProducts.map(product => `<tr><td>${product.nombre}</td></tr>`).join('')}
+            </tbody>
+        `;
+    })
+    .catch(error => {
+        console.error('Error al consultar la API:', error);
+    });
 
-            $(document).ready(function(){
-                $('#proveedores').select2();
-            });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
 }
 
-function setMethodAndAction() {
+function setMethodAndAction(method) {
     const form = document.getElementById('registrosForm');
-    form.dataset.method = 'POST'
-    const tipo = document.getElementById('tipo').value;
-    if (tipo === "1"){
-        form.dataset.action = 'https://snowbox-backend-production.up.railway.app/api/compra/generar';
-    }else{
-        form.dataset.action = 'https://snowbox-backend-production.up.railway.app/api/devolucion/generar';
+    form.dataset.method = method;
+    if (method === 'POST') {
+        form.dataset.action = 'https://snowbox-backend-production.up.railway.app/api/proveedor/registrarProveedor';
+    } else {
+        const id = document.getElementById('codigo-input').value;
+        form.dataset.action = 'https://snowbox-backend-production.up.railway.app/api/proveedor/modificarProveedor/'+ id;
     }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('cantidad-input').addEventListener('keypress', function(event) {
+    document.getElementById('ruc-input').addEventListener('keypress', function(event) {
         // Solo permite números
         const keyCode = event.keyCode || event.which;
         if (keyCode < 48 || keyCode > 57) {
             event.preventDefault(); // Bloquea el ingreso si no es un número
         }
     });
+
+    document.getElementById('telefono-input').addEventListener('keypress', function(event) {
+        // Solo permite números
+        const keyCode = event.keyCode || event.which;
+        if (keyCode < 48 || keyCode > 57) {
+            event.preventDefault(); // Bloquea el ingreso si no es un número
+        }
+    });
+
 });
 
 
@@ -121,10 +130,11 @@ function enviarDatos(event) {
     const form = document.getElementById('registrosForm');
 
     const data = {
-        id_usuario: localStorage.getItem('idUsuario'),
-        id_producto: document.getElementById('producto').value,
-        cantidad: document.getElementById('cantidad-input').value,
-        descripcion: document.getElementById('descripcion_solicitud').value,
+        id: document.getElementById('codigo-input').value,
+        nombre: document.getElementById('nombre-input').value,
+        ruc: document.getElementById('ruc-input').value,
+        telefono: document.getElementById('telefono-input').value,
+        correo: document.getElementById('correo_proveedor').value,
     };
 
     console.log(data);
@@ -150,7 +160,7 @@ function enviarDatos(event) {
                 text: 'Se hicieron los cambios correctamente'
             }).then((result) => {
                 if (result.isConfirmed || result.isDismissed) {
-                    window.location.href = `ComprasDevoluciones.html`;
+                    window.location.href = `Proveedores.html`;
                 }
             });
         })
